@@ -1,0 +1,15 @@
+<odoo>
+
+    <menuitem name="Data Import" id="menu_universal_data_import_root"
+              sequence="20000" web_icon="universal_data_import,static/description/icon.png"/>
+
+    <menuitem name="Dashboard" id="menu_data_import_dashboard"
+              parent="menu_universal_data_import_root" action="action_import_types" sequence="10"/>
+
+    <menuitem name="Configuration" id="menu_data_import_configuration"
+              parent="menu_universal_data_import_root" action="action_import_types" sequence="20"/>
+
+    <menuitem id="menu_data_import_config_data_source" parent="menu_data_import_configuration"
+              name="Data Sources"
+              action="action_data_source_config"/>
+</odoo>

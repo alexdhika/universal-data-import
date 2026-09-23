@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="view_data_source_config_form" model="ir.ui.view">
+        <field name="name">universal.data.import.data.source.config.form</field>
+        <field name="model">universal_data_import.data_source_config</field>
+        <field name="arch" type="xml">
+            <form string="Data Source Configuration">
+                <!-- tombol untuk test koneksi -->
+                <header>
+                    <button name="action_test_connection" type="object" string="Test Connection" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. HR Database"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="source_type"/>
+                        </group>
+                    </group>
+
+                    <!-- ================================================= -->
+                    <!-- API CONFIGURATION -->
+                    <!-- ================================================= -->
+                    <group string="API Configuration"
+                           attrs="{'invisible': [('source_type', '!=', 'api')]}">
+
+                        <group>
+                            <field name="api_endpoint"
+                                   attrs="{'required': [('source_type', '=', 'api')]}"/>
+
+                            <field name="api_version"/>
+
+                            <field name="api_timeout"/>
+
+                            <field name="api_auth_method"/>
+                        </group>
+
+                        <group>
+                            <field name="api_key"
+                                   attrs="{'invisible': [('api_auth_method', 'not in', ['basic', 'oauth2'])]}"/>
+
+                            <field name="api_secret"
+                                   password="True"
+                                   attrs="{'invisible': [('api_auth_method', 'not in', ['basic', 'oauth2'])]}"/>
+
+                            <field name="api_token"
+                                   password="True"
+                                   attrs="{'invisible': [('api_auth_method', '!=', 'token')]}"/>
+                        </group>
+
+                        <group col="2">
+                            <field name="api_headers"
+                                   placeholder='{"Authorization": "Bearer xxx"}'
+                                   widget="text"/>
+
+                            <field name="api_params"
+                                   placeholder='{"page": 1, "limit": 100}'
+                                   widget="text"/>
+                        </group>
+
+                    </group>
+
+
+                    <!-- ================================================= -->
+                    <!-- DATABASE CONFIGURATION -->
+                    <!-- ================================================= -->
+                    <group string="Database Configuration"
+                           attrs="{'invisible': [('source_type', '!=', 'database')]}">
+
+                        <group>
+                            <field name="database_driver"
+                                   attrs="{'required': [('source_type', '=', 'database')]}"/>
+
+                            <field name="database_uri"
+                                   attrs="{'required': [('source_type', '=', 'database')]}"/>
+
+                            <field name="database_name"/>
+                        </group>
+
+                        <group>
+                            <field name="database_user"/>
+
+                            <field name="database_password"
+                                   password="True"/>
+                        </group>
+
+                    </group>
+
+
+                    <!-- ================================================= -->
+                    <!-- FILE CONFIGURATION -->
+                    <!-- ================================================= -->
+                    <group string="File Configuration"
+                           attrs="{'invisible': [('source_type', '!=', 'file')]}">
+
+                        <group>
+                            <field name="file"
+                                   filename="file_filename"
+                                   attrs="{'required': [('source_type', '=', 'file')]}"/>
+
+                            <field name="file_filename" invisible="1"/>
+
+                        </group>
+
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- List View -->
+    <record id="view_data_source_config_list" model="ir.ui.view">
+        <field name="name">universal.data.import.data.source.config.list</field>
+        <field name="model">universal_data_import.data_source_config</field>
+        <field name="arch" type="xml">
+            <tree string="Data Sources">
+                <field name="name"/>
+                <field name="source_type"/>
+                <field name="api_endpoint"
+                       attrs="{'column_invisible': [('source_type', '!=', 'api')]}"/>
+                <field name="database_driver"
+                       attrs="{'column_invisible': [('source_type', '!=', 'database')]}"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_data_source_config" model="ir.actions.act_window">
+        <field name="name">Data Sources</field>
+        <field name="res_model">universal_data_import.data_source_config</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

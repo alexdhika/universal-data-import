@@ -1,0 +1,193 @@
+<odoo>
+    <!-- form view -->
+    <record id="import_types_form_view" model="ir.ui.view">
+        <field name="name">import.types.form.view</field>
+        <field name="model">universal_data_import.import_types</field>
+        <field name="arch" type="xml">
+            <form string="Import Types">
+                <header>
+                    <button name="generate_method_list" type="object" string="Generate Method List" class="btn-primary"/>
+                    <button name="execute_all_methods" type="object" string="Execute All Methods" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="operation_type"/>
+                        <field name="prefix_method"/>
+                        <field name="data_source_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <notebook>
+                        <page string="Method List">
+                            <field name="method_list_ids" readonly="0" force_save="1">
+                                <tree string="Method List" create="false">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="model_id" options="{'no_create': True}"/>
+
+                                    <button name="execute_method"
+                                        type="object"
+                                        string="Execute Method"
+                                        class="btn-primary"
+                                        confirm="Are you sure you want to execute this method?"
+                                    />
+                                    <field name="run_in_background"
+                                        widget="boolean_toggle"
+                                        string="Bg Run"
+                                        readonly="1"/>
+
+                                    <field name="last_execution_relative"/>
+                                    <field name="last_execution_status"
+                                        widget="badge"
+                                        decoration-success="last_execution_status == 'success'"
+                                        decoration-danger="last_execution_status == 'failed'"
+                                        decoration-warning="last_execution_status == 'pending'"
+                                    />
+                                    <field name="is_completed"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- tree view -->
+    <record id="import_types_tree_view" model="ir.ui.view">
+        <field name="name">import.types.tree.view</field>
+        <field name="model">universal_data_import.import_types</field>
+        <field name="arch" type="xml">
+            <tree string="Import Types">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- kanban -->
+    <record id="view_import_types_kanban" model="ir.ui.view">
+        <field name="name">universal_data_import.import_types.kanban</field>
+        <field name="model">universal_data_import.import_types</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="operation_type" quick_create="false" default_order="sequence">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="operation_type"/>
+                <field name="prefix_method"/>
+                <field name="prefix_method_action"/>
+                <field name="method_list_ids"/>
+                <field name="sequence"/>
+                <!-- <field name="color"/> -->
+
+                <!-- Header Kolom Tambahan / Progressbar (Opsional) -->
+                <progressbar field="operation_type" colors='{"create": "success", "update": "info", "delete": "danger", "validate": "primary"}'/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_has_icon p-3 rounded shadow-sm border" style="margin-bottom: 15px !important;">
+
+                            <!-- Header: Title & Dropdown Action -->
+                            <div class="o_kanban_record_top d-flex justify-content-between align-items-center mb-2">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title text-primary fs-5 fw-bold">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_dropdown_kanban dropdown">
+                                    <a class="dropdown-toggle o-no-caret btn btn-sm btn-link text-muted" data-bs-toggle="dropdown" href="#" role="button" aria-label="Dropdown menu" title="Dropdown menu">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                        <a role="menuitem" type="delete" class="dropdown-item text-danger">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Body: Info Badges & Method List -->
+                            <div class="o_kanban_record_body">
+                                <!-- Prefix Method Badge -->
+                                <div class="mb-2">
+                                    <span class="text-muted fs-6 me-1">Prefix:</span>
+                                    <span class="badge bg-100 text-dark border">
+                                        <i class="fa fa-code me-1 text-info"/>
+                                        <field name="prefix_method_action"/>
+                                    </span>
+                                </div>
+
+                                <!-- Method List Tags -->
+                                <div class="mt-2">
+                                    <div class="text-muted mb-1 small fw-bold">Registered Methods:</div>
+                                    <field name="method_list_ids"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color'}"/>
+                                </div>
+                            </div>
+
+                            <!-- Footer: Handle Drag Sequence -->
+                            <div class="o_kanban_record_bottom mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="completed_status" widget="html" readonly="1"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <!-- Placeholder untuk avatar/status jika diperlukan nanti -->
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    <!-- form method list -->
+    <record id="view_method_list_form" model="ir.ui.view">
+        <field name="name">universal_data_import.method_list.form</field>
+        <field name="model">universal_data_import.method_list</field>
+        <field name="arch" type="xml">
+            <form string="Method">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="import_type_id" options="{'no_create': True}" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="model_id" options="{'no_create': True}" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="last_execution_date" readonly="1"/>
+                            <field name="last_execution_status"
+                                widget="badge"
+                                decoration-success="last_execution_status == 'success'"
+                                decoration-danger="last_execution_status == 'failed'"
+                                decoration-warning="last_execution_status == 'pending'" readonly="1"/>
+                            <field name="is_completed"/>
+                            <field name="run_in_background" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <!-- Error Log full width -->
+                    <group>
+                        <field name="error_log"
+                            nolabel="1"
+                            readonly="1"
+                            placeholder="Error log..."
+                            widget1="CopyClipboardText"
+                            rows="10"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- action -->
+    <record id="action_import_types" model="ir.actions.act_window">
+        <field name="name">Import Types</field>
+        <field name="res_model">universal_data_import.import_types</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+</odoo>

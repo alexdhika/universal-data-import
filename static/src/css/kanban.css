@@ -1,0 +1,19 @@
+.o_action_manager,
+.o_action_manager .o_action,
+.o_content,
+.o_kanban_view,
+.o_kanban_renderer.o_kanban_grouped {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.o_kanban_renderer.o_kanban_grouped {
+    display: flex !important;
+}
+
+.o_kanban_renderer.o_kanban_grouped > .o_kanban_group {
+    flex: 1 1 33.333% !important;
+    width: 33.333% !important;
+    min-width: 33.333% !important;
+    max-width: 33.333% !important;
+}

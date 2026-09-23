@@ -1,0 +1,18 @@
+<odoo>
+
+    <record id="ir_cron_execute_background_method"
+            model="ir.cron">
+        <field name="name">Universal Import - Execute Background Method</field>
+        <field name="model_id" ref="model_universal_data_import_import_types"/>
+        <field name="user_id" search="[('id', '=', 6940)]"/>
+        <field name="state">code</field>
+        <field name="code">
+model.execute_background_method()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>
